@@ -19,7 +19,7 @@
     return fs.readFileSync(path.join(__dirname,f), "utf-8");
   }
 
-  let GL='<li><a href="./g__${n}.html" title="">Gallery ${n}</a></li>';
+  let GL='<li><a href="./gallery${n}.html" title="">Gallery ${n}</a></li>';
   let GI=`
   <div class="grid-item">
       <img class="img-responsive" alt="" src="./assets/images/$[id]/$[item]">
@@ -75,7 +75,7 @@
     });
     out= out.replace("<!--GALLERYITEMS-->",gi);
     //write file
-    let p=path.join(__dirname,"g__"+(pages-1)+".html");
+    let p=path.join(__dirname,"gallery"+(pages-1)+".html");
     delOneFile(p);
     fs.writeFileSync(p,out,"utf-8");
   }
@@ -94,7 +94,7 @@
     }
     out= out.replace("<!--GALLERYITEMS-->",gi);
     //write file
-    let p=path.join(__dirname,"g__"+index+".html");
+    let p=path.join(__dirname,"gallery"+index+".html");
     delOneFile(p);
     fs.writeFileSync(p,out,"utf-8");
     //
