@@ -67,7 +67,7 @@
     let M=g_meta["rc"];
     let gi="";
     Object.keys(M).forEach(k=>{
-      gi += modGI("rc","Gisele",M[k].title,k) + "\n";
+      gi += modGI("rc","Aritzia",M[k].title,k) + "\n";
     });
     M=g_meta["ec"];
     Object.keys(M).forEach(k=>{
