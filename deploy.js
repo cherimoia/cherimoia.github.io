@@ -10,9 +10,14 @@
   let KL= "assets/images/kl/";
   let g_meta;
 
-  function listFiles(subdir){
+  function listFiles(subdir,ext){
     let dir= path.join(__dirname, subdir);
-    return fs.readdirSync(dir);
+    let rc=fs.readdirSync(dir);
+    if(ext){
+      ext="."+ext.toLowerCase();
+      rc=rc.filter(n=> n.endsWith(ext));
+    }
+    return rc;
   }
 
   function readFile(f){
@@ -104,7 +109,7 @@
     }
   }
 
-  let nums= listFiles(KL).map(x=>{
+  let nums= listFiles(KL,"jpg").map(x=>{
     let p=x.substring(0,x.lastIndexOf("."));
     let z=/[0-9]+/.test(p);
     return z? {n:parseInt(p),f:x}: null;
