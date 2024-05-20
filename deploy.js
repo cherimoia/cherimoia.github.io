@@ -6,7 +6,8 @@
   let fs = require('fs');
   let TPL="tpl.html";
   let MNF="manifest.json";
-  let CHUNK=16;
+  let CHUNK=12;
+  let PAD=0;
   let KL= "assets/images/kl/";
   let g_meta;
 
@@ -61,28 +62,11 @@
 
   function fmtGLinks(pages, out){
     let gs="";
-    for(let i=1;i<pages;++i){
-      gs += GL.replaceAll("${n}", ""+i) + "\n";
+    for(let s,i=1;i<pages;++i){
+      s=String(i).padStart(PAD,"0");
+      gs += GL.replaceAll("${n}", ""+s) + "\n";
     }
     return out.replace("<!--GALLERY-->",gs);
-  }
-
-  function doOthers(pages,root){
-    let out= fmtGLinks(pages, root);
-    let M=g_meta["rc"];
-    let gi="";
-    Object.keys(M).forEach(k=>{
-      gi += modGI("rc","Aritzia",M[k].title,k) + "\n";
-    });
-    M=g_meta["ec"];
-    Object.keys(M).forEach(k=>{
-      gi += modGI("ec","Elise",M[k].title,k) + "\n";
-    });
-    out= out.replace("<!--GALLERYITEMS-->",gi);
-    //write file
-    let p=path.join(__dirname,"gallery"+(pages-1)+".html");
-    delOneFile(p);
-    fs.writeFileSync(p,out,"utf-8");
   }
 
   function doMain(index,pages, root,nums,info){
@@ -99,7 +83,7 @@
     }
     out= out.replace("<!--GALLERYITEMS-->",gi);
     //write file
-    let p=path.join(__dirname,"gallery"+index+".html");
+    let p=path.join(__dirname,"gallery"+ String(index).padStart(PAD,"0")+".html");
     delOneFile(p);
     fs.writeFileSync(p,out,"utf-8");
     //
@@ -125,8 +109,12 @@
 
   let pages= Math.floor(nums.length/CHUNK);
   if((nums.length%CHUNK)>0) pages+=1;
-  pages+=1; // for others
   console.log("pages="+pages);
+
+  if(pages<10){ PAD=1 }
+  else if(pages <100) {PAD=2}
+  else if(pages<1000) {PAD=3}
+
 
   let root= readFile(TPL);
   //console.log(root);
@@ -134,11 +122,9 @@
   g_meta= JSON.parse(readFile(MNF));
   //console.log(JSON.stringify(meta));
 
-  for(let i=0;i<pages-1;++i){
+  for(let i=0;i<pages;++i){
     doMain(i,pages,root,nums, {id:"kl",artist:"Josen"});
   }
-
-  doOthers(pages,root);
 
 })(this);
 

@@ -126,21 +126,8 @@
   "4.jpg": {"title":"Haunted House"},
   "3.jpg": {"title":"Bunny Rabbit"},
   "2.jpg": {"title":"The Mouse, and I"},
-  "1.jpg": {"title":"Musing..."},
+  "1.jpg": {"title":"Musing..."}
 
-  "rc":{
-    "3.jpg": {"title":"Abstract - 1"},
-    "2.jpg": {"title":"Abstract - 2"},
-    "1.jpg": {"title":"Simply, Love"}
-  },
-
-  "ec":{
-    "5.jpg": {"title":"The First One"},
-    "4.jpg": {"title":"The Mountain"},
-    "3.jpg": {"title":"The Elephant"},
-    "2.jpg": {"title":"E<sup>3</sup>"},
-    "1.jpg": {"title":"The Rabbit"}
-  }
 
 }
 
