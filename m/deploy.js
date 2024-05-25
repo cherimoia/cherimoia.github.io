@@ -47,7 +47,7 @@
     <span class="date">{{{POST-DATE}}}</span>
     <h2>{{{POST-DESC}}}</h2>
   </header>
-  <a href="#" class="image fit"><img src="/assets/images/kl/{{{POST-IMG}}}" alt="" /></a>
+  <a href="javascript:void(0)" class="image fit"><img src="/assets/images/kl/{{{POST-IMG}}}" alt="" /></a>
   <div>
   <span class="fa fa-star checked"></span>
   <span class="fa fa-star checked"></span>
