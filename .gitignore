@@ -11,4 +11,6 @@ pom.xml.asc
 .lein-plugins/
 .lein-failures
 .nrepl-port
+.DS_Store
 .cpcache/
+
