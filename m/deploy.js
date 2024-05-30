@@ -48,7 +48,7 @@
     <h2>{{{POST-DESC}}}</h2>
   </header>
   <a href="javascript:void(0)" class="image fit"><img src="/assets/images/kl/{{{POST-IMG}}}" alt="" /></a>
-  <h4>{{{POST-NUM}}}</h4>
+  <h6>{{{POST-NUM}}}</h6>
   <div>
   <span class="fa fa-star checked"></span>
   <span class="fa fa-star checked"></span>
