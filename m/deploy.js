@@ -48,6 +48,7 @@
     <h2>{{{POST-DESC}}}</h2>
   </header>
   <a href="javascript:void(0)" class="image fit"><img src="/assets/images/kl/{{{POST-IMG}}}" alt="" /></a>
+  <h4>{{{POST-NUM}}}</h4>
   <div>
   <span class="fa fa-star checked"></span>
   <span class="fa fa-star checked"></span>
@@ -85,11 +86,12 @@
   ////////////////////////////////////////////////////////////////////////////
   //
   ////////////////////////////////////////////////////////////////////////////
-  function modGI(info,file){
+  function modGI(meta,file,info){
     let s=POST;
-    s= s.replace("{{{POST-DATE}}}", fmtDate(info.when));
-    s= s.replace("{{{POST-DESC}}}", info.title);
+    s= s.replace("{{{POST-DATE}}}", fmtDate(meta.when));
+    s= s.replace("{{{POST-DESC}}}", meta.title);
     s= s.replace("{{{POST-IMG}}}", file);
+    s=s.replace("{{{POST-NUM}}}", `${info.cur}/${info.total}`);
     return s;
   }
 
@@ -121,7 +123,7 @@
   ////////////////////////////////////////////////////////////////////////////
   //
   ////////////////////////////////////////////////////////////////////////////
-  function doMain(index,pages, root,nums,info){
+  function doMain(index,pages, root,nums, info){
     let gi="",
         px=root,
         out=root;
@@ -130,7 +132,8 @@
       if(nums.length>0){
         obj=nums.pop();
         m=g_meta[obj.f];
-        gi += modGI(m,obj.f) + "\n";
+        gi += modGI(m,obj.f,info) + "\n";
+        --info.cur;
       }
     }
 
@@ -182,22 +185,26 @@
     return console.log("some file names are not numbered.");
   }
 
+  let totalImages=0;
+  g_meta= JSON.parse(readFile(MNF));
+  totalImages=Object.keys(g_meta).length;
+  console.log(`total count of images=${totalImages}`);
+  //console.log(JSON.stringify(meta));
+
   nums.sort(function(a,b){return a.n<b.n?-11:a.n>b.n?1:0});
   //nums.forEach(c=>console.log(c));
   console.log("number of files= " + nums.length);
 
   let pages= Math.floor(nums.length/CHUNK);
   if((nums.length%CHUNK)>0) pages+=1;
-  console.log("pages="+pages);
+  console.log(`pages=${pages}, per page=${CHUNK}`);
 
+  let info= {id:"kl",artist:"Josen",cur:totalImages, total:totalImages};
   let root= readFile(TPL).replaceAll("\r\n","\n");
   //console.log(root);
 
-  g_meta= JSON.parse(readFile(MNF));
-  //console.log(JSON.stringify(meta));
-
   for(let i=1;i<=pages;++i){
-    doMain(i,pages,root,nums, {id:"kl",artist:"Josen"});
+    doMain(i,pages,root,nums, info);
   }
 
 })(this);
