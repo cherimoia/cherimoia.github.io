@@ -132,8 +132,8 @@
       if(nums.length>0){
         obj=nums.pop();
         m=g_meta[obj.f];
+        ++info.cur;
         gi += modGI(m,obj.f,info) + "\n";
-        --info.cur;
       }
     }
 
@@ -199,7 +199,7 @@
   if((nums.length%CHUNK)>0) pages+=1;
   console.log(`pages=${pages}, per page=${CHUNK}`);
 
-  let info= {id:"kl",artist:"Josen",cur:totalImages, total:totalImages};
+  let info= {id:"kl",artist:"Josen",cur:0, total:totalImages};
   let root= readFile(TPL).replaceAll("\r\n","\n");
   //console.log(root);
 
