@@ -9,7 +9,7 @@
   let MNF="../manifest.json";
   let CHUNK=10;
   let KL= "../assets/images/kl/";
-  let g_meta;
+  let g_moi, g_meta;
 
   ////////////////////////////////////////////////////////////////////////////
   //
@@ -59,6 +59,12 @@
 </article>
     `;
 
+let MOIPOST=`
+<article>
+  <a href="javascript:void(0)" class="image fit"><img src="/assets/images/kl/{{{POST-IMG}}}" alt="" /></a>
+</article>
+    `;
+
   let PAGES=`
 <a href="{{{PURL}}}" class="next">Prev</a>
 <a href="{{{NURL}}}" class="next">Next</a>
@@ -86,8 +92,20 @@
   ////////////////////////////////////////////////////////////////////////////
   //
   ////////////////////////////////////////////////////////////////////////////
-  function modGI(meta,file,info){
-    let s=POST;
+  function delGalleries(){
+    let regex = /gallery[0-9]+.html$/;
+    let cur= `${__dirname}`;
+    fs.readdirSync(__dirname).filter(f => regex.test(f)).map(f => {
+      //console.log(`${path.join(__dirname, f)}`);
+      delFile(f);
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  ////////////////////////////////////////////////////////////////////////////
+  function modGI(index,meta,file,info){
+    let s= index==0 ? MOIPOST : POST;
     s= s.replace("{{{POST-DATE}}}", fmtDate(meta.when));
     s= s.replace("{{{POST-DESC}}}", meta.title);
     s= s.replace("{{{POST-IMG}}}", file);
@@ -105,7 +123,11 @@
       p="/m/gallery"+pages+".html";
       ps=PAGES.replace("{{{PURL}}}",p).replace("{{{NURL}}}",n);
     }
-    else if(index<pages){
+    else if(index==0){
+      n="/m/gallery"+(index+1)+".html";
+      p="/m/gallery"+pages+".html";
+      ps=PAGES.replace("{{{PURL}}}",p).replace("{{{NURL}}}",n);
+    }else if(index<pages){
       n="/m/gallery"+(index+1)+".html";
       p="/m/gallery"+(index-1)+".html";
       ps=PAGES.replace("{{{PURL}}}",p).replace("{{{NURL}}}",n);
@@ -128,20 +150,32 @@
         px=root,
         out=root;
 
+    if(index==0){
+      gi += modGI(index,g_meta[g_moi.f],g_moi.f,info) + "\n";
+    }
+
     for(let s,m,obj,i=0; i<CHUNK;++i){
       if(nums.length>0){
         obj=nums.pop();
         m=g_meta[obj.f];
         ++info.cur;
-        gi += modGI(m,obj.f,info) + "\n";
+        gi += modGI(index,m,obj.f,info) + "\n";
       }
     }
 
     out=out.replace("{{{FADEIN}}}","");
     out=out.replace("{{{INTRO}}}","");
+
+    if(index == 0){
+      out=out.replace("{{{POSTSCZ}}}","");
+    }else{
+      out=out.replace("{{{POSTSCZ}}}", 'class="posts"');
+    }
+
     if(index==1){
       px=px.replace("{{{FADEIN}}}",'class="fade-in"');
       px=px.replace("{{{INTRO}}}",INTRO);
+      px=px.replace("{{{POSTSCZ}}}", 'class="posts"');
     }
 
     out=modPage(index,pages,gi,out);
@@ -149,7 +183,7 @@
 
     //write file
     let p=path.join(__dirname,"gallery"+ String(index)+".html");
-    delOneFile(p);
+    //delOneFile(p);
     fs.writeFileSync(p,out,"utf-8");
     //
     if(index==1){
@@ -175,11 +209,19 @@
   ////////////////////////////////////////////////////////////////////////////
   //--------------- code starts --------
   ////////////////////////////////////////////////////////////////////////////
+
+  delGalleries();
+
   let nums= listFiles(KL,"jpg").map(x=>{
     let p=x.substring(0,x.lastIndexOf("."));
-    let z=/[0-9]+/.test(p);
-    return z? {n:parseInt(p),f:x}: null;
-  });
+    if(/[0-9]+/.test(p)){
+      return {n:parseInt(p),f:x}
+    }else if("moi"==p){
+      return g_moi= {n: -911, f:x}
+    }else{
+      return null
+    }
+  }).filter(o=> o.n >=0);
 
   if(nums.some(x=> x===null)){
     return console.log("some file names are not numbered.");
@@ -188,6 +230,9 @@
   let totalImages=0;
   g_meta= JSON.parse(readFile(MNF));
   totalImages=Object.keys(g_meta).length;
+  if(g_moi){
+    totalImages--;
+  }
   console.log(`total count of images=${totalImages}`);
   //console.log(JSON.stringify(meta));
 
@@ -206,6 +251,9 @@
   for(let i=1;i<=pages;++i){
     doMain(i,pages,root,nums, info);
   }
+
+  //do moi
+  doMain(0,pages, root, [], info);
 
 })(this);
 
